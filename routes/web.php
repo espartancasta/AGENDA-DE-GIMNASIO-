@@ -4,9 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MembershipController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// 👉 Redirección directa al login (adiós welcome)
+Route::redirect('/', '/login');
 
 Route::middleware(['auth'])->group(function () {
 

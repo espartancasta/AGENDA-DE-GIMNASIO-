@@ -12,9 +12,31 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    {{-- Siempre visible: Dashboard --}}
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    {{-- Solo ADMIN: gestión de usuarios --}}
+                    @if(auth()->check() && auth()->user()->role?->name === 'admin')
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                    @endif
+
+                    {{-- ADMIN + STAFF: membresías --}}
+                    @if(auth()->check() && in_array(auth()->user()->role?->name, ['admin', 'staff']))
+                        <x-nav-link :href="route('panel.memberships.index')" :active="request()->routeIs('panel.memberships.*')">
+                            {{ __('Memberships') }}
+                        </x-nav-link>
+                    @endif
+
+                    {{-- CLIENT: área de cliente --}}
+                    @if(auth()->check() && auth()->user()->role?->name === 'client')
+                        <x-nav-link :href="route('client.home')" :active="request()->routeIs('client.home')">
+                            {{ __('My area') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -34,7 +56,12 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <!-- Quitamos el link de Profile -->
+                        {{-- Link de perfil solo si la ruta existe --}}
+                        @if (Route::has('profile.edit'))
+                            <x-dropdown-link :href="route('profile.edit')">
+                                {{ __('Profile') }}
+                            </x-dropdown-link>
+                        @endif
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -68,6 +95,24 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @if(auth()->check() && auth()->user()->role?->name === 'admin')
+                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->check() && in_array(auth()->user()->role?->name, ['admin', 'staff']))
+                <x-responsive-nav-link :href="route('panel.memberships.index')" :active="request()->routeIs('panel.memberships.*')">
+                    {{ __('Memberships') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->check() && auth()->user()->role?->name === 'client')
+                <x-responsive-nav-link :href="route('client.home')" :active="request()->routeIs('client.home')">
+                    {{ __('My area') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
@@ -78,7 +123,12 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <!-- Quitamos el link de Profile también aquí -->
+                {{-- Link de perfil solo si la ruta existe --}}
+                @if (Route::has('profile.edit'))
+                    <x-responsive-nav-link :href="route('profile.edit')">
+                        {{ __('Profile') }}
+                    </x-responsive-nav-link>
+                @endif
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

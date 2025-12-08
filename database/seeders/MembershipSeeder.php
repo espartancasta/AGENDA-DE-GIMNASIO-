@@ -7,33 +7,106 @@ use Illuminate\Database\Seeder;
 
 class MembershipSeeder extends Seeder
 {
+    /**
+     * Ejecutar el seeder de membresías.
+     */
     public function run(): void
     {
         $plans = [
-            ['name' => 'Day Pass',                  'price' => 80,   'duration_days' => 1],
-            ['name' => 'Week Starter',              'price' => 300,  'duration_days' => 7],
-            ['name' => 'Basic Mensual',             'price' => 600,  'duration_days' => 30],
-            ['name' => 'Premium Mensual',           'price' => 900,  'duration_days' => 30],
-            ['name' => 'Student Fit',               'price' => 500,  'duration_days' => 30],
-            ['name' => 'Pareja Fit',                'price' => 1100, 'duration_days' => 30],
-            ['name' => 'Trimestral Basic',          'price' => 1600, 'duration_days' => 90],
-            ['name' => 'Trimestral Premium',        'price' => 2200, 'duration_days' => 90],
-            ['name' => 'Semestral',                 'price' => 3800, 'duration_days' => 180],
-            ['name' => 'Anual Basic',               'price' => 6500, 'duration_days' => 365],
-            ['name' => 'Anual Premium',             'price' => 8200, 'duration_days' => 365],
-            ['name' => 'Crossfit Unlimited',        'price' => 1200, 'duration_days' => 30],
-            ['name' => 'Spinning Nights',           'price' => 700,  'duration_days' => 30],
-            ['name' => 'Clases Grupales Ilimitadas','price' => 1000, 'duration_days' => 30],
-            ['name' => 'VIP Todo Incluido',         'price' => 1500, 'duration_days' => 30],
+            [
+                'name'          => 'Day Pass',
+                'price'         => 80,
+                'duration_days' => 1,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Week Starter',
+                'price'         => 350,
+                'duration_days' => 7,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Basic Mensual',
+                'price'         => 600,
+                'duration_days' => 30,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Full Mensual',
+                'price'         => 800,
+                'duration_days' => 30,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Estudiante Mensual',
+                'price'         => 500,
+                'duration_days' => 30,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Pareja Mensual',
+                'price'         => 1100,
+                'duration_days' => 30,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Trimestral Basic',
+                'price'         => 1500,
+                'duration_days' => 90,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Trimestral Full',
+                'price'         => 1900,
+                'duration_days' => 90,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Semestral Basic',
+                'price'         => 2800,
+                'duration_days' => 180,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Semestral Full',
+                'price'         => 3400,
+                'duration_days' => 180,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Anual Basic',
+                'price'         => 5000,
+                'duration_days' => 365,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Anual Full',
+                'price'         => 6200,
+                'duration_days' => 365,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'CrossFit Pack',
+                'price'         => 900,
+                'duration_days' => 30,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Yoga + Gym',
+                'price'         => 850,
+                'duration_days' => 30,
+                'is_active'     => true,
+            ],
+            [
+                'name'          => 'Premium VIP',
+                'price'         => 1500,
+                'duration_days' => 30,
+                'is_active'     => true,
+            ],
         ];
 
         foreach ($plans as $plan) {
-            Membership::create([
-                'name'          => $plan['name'],
-                'price'         => $plan['price'],
-                'duration_days' => $plan['duration_days'],
-                'is_active'     => true,
-            ]);
+            Membership::create($plan);
         }
     }
 }

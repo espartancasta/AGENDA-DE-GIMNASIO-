@@ -1,53 +1,265 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 style="font-size:24px;font-weight:800;color:#111827;">
+            Editar usuario
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="container">
-    <h1>Edit user</h1>
+    <div style="padding: 2.5rem 0; background:#f3f4f6;">
+        <div style="max-width: 960px; margin: 0 auto; padding: 0 16px;">
+            <div style="
+                background:#fff;
+                border:1px solid #e5e7eb;
+                border-radius:14px;
+                box-shadow:0 10px 30px rgba(15,23,42,0.08);
+                overflow:hidden;
+            ">
+                {{-- Header de tarjeta --}}
+                <div style="
+                    padding: 16px 24px;
+                    border-bottom:1px solid #e5e7eb;
+                    background:#f9fafb;
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    gap:16px;
+                ">
+                    <div>
+                        <div style="font-size:16px;font-weight:800;color:#111827;">Editar usuario</div>
+                        <div style="margin-top:4px;font-size:13px;color:#6b7280;">
+                            Actualiza los datos del usuario y guarda los cambios.
+                        </div>
+                    </div>
 
-    <form method="POST" action="{{ route('admin.users.update', $user) }}">
-        @csrf
-        @method('PUT')
+                    <a href="{{ route('admin.users.index') }}"
+                       style="
+                           padding: 10px 14px;
+                           border-radius:999px;
+                           border:1px solid #d1d5db;
+                           background:#fff;
+                           font-size:11px;
+                           font-weight:800;
+                           letter-spacing:.08em;
+                           text-transform:uppercase;
+                           color:#111827;
+                           text-decoration:none;
+                       ">
+                        Volver
+                    </a>
+                </div>
 
-        <div>
-            <label>Name</label>
-            <input type="text" name="name" value="{{ old('name', $user->name) }}">
-            @error('name') <div>{{ $message }}</div> @enderror
+                {{-- Errores --}}
+                @if ($errors->any())
+                    <div style="padding:16px 24px 0 24px;">
+                        <div style="
+                            padding:12px 14px;
+                            border-radius:10px;
+                            border:1px solid #fecaca;
+                            background:#fef2f2;
+                            color:#b91c1c;
+                            font-size:13px;
+                        ">
+                            <strong style="font-weight:800;">Revisa los campos:</strong>
+                            <ul style="margin-top:8px;padding-left:18px;">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Form --}}
+                <form method="POST"
+                      action="{{ route('admin.users.update', $user) }}"
+                      style="padding: 18px 24px 24px 24px;">
+                    @csrf
+                    @method('PUT')
+
+                    {{-- Grid --}}
+                    <div style="display:grid;grid-template-columns: 1fr 1fr; gap:16px;">
+                        {{-- Name --}}
+                        <div style="grid-column: span 1;">
+                            <label for="name" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
+                                Nombre
+                            </label>
+                            <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                value="{{ old('name', $user->name) }}"
+                                required
+                                style="
+                                    width:100%;
+                                    border-radius:10px;
+                                    border:1px solid #d1d5db;
+                                    padding:11px 12px;
+                                    font-size:14px;
+                                    color:#111827;
+                                    background:#fff;
+                                    outline:none;
+                                "
+                                placeholder="Nombre completo"
+                            >
+                        </div>
+
+                        {{-- Email --}}
+                        <div style="grid-column: span 1;">
+                            <label for="email" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value="{{ old('email', $user->email) }}"
+                                required
+                                style="
+                                    width:100%;
+                                    border-radius:10px;
+                                    border:1px solid #d1d5db;
+                                    padding:11px 12px;
+                                    font-size:14px;
+                                    color:#111827;
+                                    background:#fff;
+                                    outline:none;
+                                "
+                                placeholder="correo@dominio.com"
+                            >
+                        </div>
+
+                        {{-- Password --}}
+                        <div style="grid-column: span 2;">
+                            <label for="password" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
+                                Nueva contraseña (opcional)
+                            </label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autocomplete="new-password"
+                                style="
+                                    width:100%;
+                                    border-radius:10px;
+                                    border:1px solid #d1d5db;
+                                    padding:11px 12px;
+                                    font-size:14px;
+                                    color:#111827;
+                                    background:#fff;
+                                    outline:none;
+                                "
+                                placeholder="Deja vacío para no cambiarla"
+                            >
+                            <div style="margin-top:6px;font-size:12px;color:#6b7280;">
+                                Si no deseas cambiar la contraseña, deja este campo vacío.
+                            </div>
+                        </div>
+
+                        {{-- Role --}}
+                        <div style="grid-column: span 1;">
+                            <label for="role_id" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
+                                Rol
+                            </label>
+                            <select
+                                id="role_id"
+                                name="role_id"
+                                required
+                                style="
+                                    width:100%;
+                                    border-radius:10px;
+                                    border:1px solid #d1d5db;
+                                    padding:11px 12px;
+                                    font-size:14px;
+                                    color:#111827;
+                                    background:#fff;
+                                    outline:none;
+                                ">
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}"
+                                        {{ (int) old('role_id', optional($user->role)->id) === (int) $role->id ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Active --}}
+                        <div style="grid-column: span 1;">
+                            <label for="is_active" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
+                                Activo
+                            </label>
+                            <select
+                                id="is_active"
+                                name="is_active"
+                                required
+                                style="
+                                    width:100%;
+                                    border-radius:10px;
+                                    border:1px solid #d1d5db;
+                                    padding:11px 12px;
+                                    font-size:14px;
+                                    color:#111827;
+                                    background:#fff;
+                                    outline:none;
+                                ">
+                                <option value="1" {{ old('is_active', (int)$user->is_active) == 1 ? 'selected' : '' }}>Sí</option>
+                                <option value="0" {{ old('is_active', (int)$user->is_active) == 0 ? 'selected' : '' }}>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr style="margin:18px 0;border-color:#e5e7eb;">
+
+                    {{-- Botones --}}
+                    <div style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+                        <div style="font-size:12px;color:#6b7280;">
+                            Última actualización: <strong style="color:#111827;">{{ optional($user->updated_at)->format('Y-m-d H:i') }}</strong>
+                        </div>
+
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <a href="{{ route('admin.users.index') }}"
+                               style="
+                                   padding: 11px 16px;
+                                   border-radius:999px;
+                                   border:1px solid #d1d5db;
+                                   background:#fff;
+                                   color:#374151;
+                                   font-weight:800;
+                                   font-size:12px;
+                                   letter-spacing:.08em;
+                                   text-transform:uppercase;
+                                   text-decoration:none;
+                               ">
+                                Cancelar
+                            </a>
+
+                            <button type="submit"
+                                    style="
+                                        padding: 11px 18px;
+                                        border-radius:999px;
+                                        border:none;
+                                        background: linear-gradient(90deg, #2563eb, #4f46e5);
+                                        color:#fff;
+                                        font-weight:900;
+                                        font-size:12px;
+                                        letter-spacing:.10em;
+                                        text-transform:uppercase;
+                                        cursor:pointer;
+                                        box-shadow:0 10px 22px rgba(79,70,229,.20);
+                                    ">
+                                Guardar cambios
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            {{-- Responsive simple --}}
+            <style>
+                @media (max-width: 820px) {
+                    .grid-two { grid-template-columns: 1fr !important; }
+                }
+            </style>
         </div>
-
-        <div>
-            <label>Email</label>
-            <input type="email" name="email" value="{{ old('email', $user->email) }}">
-            @error('email') <div>{{ $message }}</div> @enderror
-        </div>
-
-        <div>
-            <label>New password (optional)</label>
-            <input type="password" name="password">
-            @error('password') <div>{{ $message }}</div> @enderror
-        </div>
-
-        <div>
-            <label>Role</label>
-            <select name="role_id">
-                @foreach($roles as $role)
-                <option value="{{ $role->id }}" @if($user->role_id == $role->id) selected @endif>
-                    {{ $role->display_name ?? $role->name }}
-                </option>
-                @endforeach
-            </select>
-            @error('role_id') <div>{{ $message }}</div> @enderror
-        </div>
-
-        <div>
-            <label>Active</label>
-            <select name="is_active">
-                <option value="1" @if($user->is_active) selected @endif>Yes</option>
-                <option value="0" @if(!$user->is_active) selected @endif>No</option>
-            </select>
-            @error('is_active') <div>{{ $message }}</div> @enderror
-        </div>
-
-        <button type="submit">Update</button>
-    </form>
-</div>
-@endsection
+    </div>
+</x-app-layout>

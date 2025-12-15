@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Users') }}
+            Usuarios
         </h2>
     </x-slot>
 
@@ -19,16 +19,23 @@
                     </a>
                 </div>
 
+                @if(session('success'))
+                    <div class="mb-4 px-4 py-3 rounded-md border border-green-500/30 bg-green-500/10 text-green-200 text-sm">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
                         <thead class="bg-indigo-600 text-white">
                             <tr>
                                 <th class="px-4 py-2 text-left">ID</th>
-                                <th class="px-4 py-2 text-left">Name</th>
+                                <th class="px-4 py-2 text-left">Nombre</th>
                                 <th class="px-4 py-2 text-left">Email</th>
-                                <th class="px-4 py-2 text-left">Role</th>
-                                <th class="px-4 py-2 text-left">Active</th>
-                                <th class="px-4 py-2 text-center">Actions</th>
+                                <th class="px-4 py-2 text-left">Rol</th>
+                                <th class="px-4 py-2 text-left">Membresía</th>
+                                <th class="px-4 py-2 text-left">Activo</th>
+                                <th class="px-4 py-2 text-center">Acciones</th>
                             </tr>
                         </thead>
 
@@ -40,18 +47,52 @@
                                     <td class="px-4 py-2">{{ $user->email }}</td>
                                     <td class="px-4 py-2">{{ $user->role->name ?? '-' }}</td>
 
+                                    {{-- ✅ MEMBRESÍA (solo para clientes) --}}
+                                    <td class="px-4 py-2">
+                                        @if(($user->role->name ?? null) === 'client')
+                                            @if($user->membership)
+                                                <span style="
+                                                    padding:6px 10px;
+                                                    border-radius:999px;
+                                                    background:#dbeafe;
+                                                    color:#1e40af;
+                                                    font-weight:900;
+                                                    font-size:12px;
+                                                    display:inline-flex;
+                                                    align-items:center;
+                                                    gap:8px;
+                                                ">
+                                                    ✅ {{ $user->membership->name }}
+                                                </span>
+                                            @else
+                                                <span style="
+                                                    padding:6px 10px;
+                                                    border-radius:999px;
+                                                    background:#fee2e2;
+                                                    color:#991b1b;
+                                                    font-weight:900;
+                                                    font-size:12px;
+                                                ">
+                                                    Sin membresía
+                                                </span>
+                                            @endif
+                                        @else
+                                            —
+                                        @endif
+                                    </td>
+
                                     <td class="px-4 py-2">
                                         <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
                                             {{ $user->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            {{ $user->is_active ? 'Yes' : 'No' }}
+                                            {{ $user->is_active ? 'Sí' : 'No' }}
                                         </span>
                                     </td>
 
-                                    {{-- ACTIONS --}}
+                                    {{-- ACCIONES --}}
                                     <td class="px-4 py-2">
                                         <div class="flex justify-center items-center gap-2" style="min-width:120px;">
 
-                                            {{-- EDITAR (botón visible sí o sí) --}}
+                                            {{-- EDITAR --}}
                                             <a href="{{ route('admin.users.edit', $user) }}"
                                                title="Editar usuario"
                                                class="inline-flex items-center gap-2 px-3 py-2 rounded-full text-xs font-bold uppercase"
@@ -86,16 +127,16 @@
                                                 </svg>
                                             </a>
 
-                                            {{-- DESACTIVAR/ELIMINAR --}}
+                                            {{-- ELIMINAR --}}
                                             <form action="{{ route('admin.users.destroy', $user) }}"
                                                   method="POST"
                                                   class="inline"
-                                                  onsubmit="return confirm('¿Desactivar / eliminar usuario?')">
+                                                  onsubmit="return confirm('¿Eliminar usuario?')">
                                                 @csrf
                                                 @method('DELETE')
 
                                                 <button type="submit"
-                                                        title="Desactivar usuario"
+                                                        title="Eliminar usuario"
                                                         class="inline-flex items-center gap-2 px-3 py-2 rounded-full text-xs font-bold uppercase"
                                                         style="
                                                             background-color:#dc2626 !important;
@@ -132,7 +173,6 @@
                                                     </svg>
                                                 </button>
                                             </form>
-
                                         </div>
                                     </td>
                                 </tr>

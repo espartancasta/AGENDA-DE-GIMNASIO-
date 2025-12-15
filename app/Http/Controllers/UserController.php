@@ -4,67 +4,124 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Alias de roles (español / inglés)
+     */
+    private const ROLE_CLIENT_ALIASES = ['client', 'cliente'];
+    private const ROLE_STAFF_ALIASES  = ['staff', 'recepcionista'];
+
+    /**
+     * Listado de usuarios
+     */
     public function index()
     {
-        $users = User::with('role')->paginate(10);
+        $users = User::with('role')
+            ->orderBy('id')
+            ->paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
 
+    /**
+     * Formulario crear usuario
+     * (membresías y promociones SOLO VISUALES)
+     */
     public function create()
     {
-        $roles = Role::all();
-        return view('admin.users.create', compact('roles'));
+        $roles = Role::orderBy('id')->get();
+
+        // Se envían SOLO para la vista (no se guardan)
+        $memberships = Membership::where('is_active', true)
+            ->orderBy('duration_days')
+            ->get();
+
+        return view('admin.users.create', compact('roles', 'memberships'));
     }
 
+    /**
+     * Guardar usuario
+     * ❌ NO se guardan membership_id ni discount_percent
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'    => 'required',
-            'email'   => 'required|email|unique:users',
-            'password'=> 'required|min:6',
-            'role_id' => 'required|exists:roles,id',
+            'name'      => ['required', 'string', 'max:255'],
+            'email'     => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password'  => ['required', 'string', 'min:6'],
+            'role_id'   => ['required', 'exists:roles,id'],
+            'is_active' => ['required', 'boolean'],
         ]);
 
         $data['password'] = Hash::make($data['password']);
 
+        // 👇 IGNORAR COMPLETAMENTE estos campos (solo UI)
+        // membership_id
+        // discount_percent
+
         User::create($data);
 
-        return redirect()->route('admin.users.index')->with('success', 'User created');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Usuario creado correctamente.');
     }
 
+    /**
+     * Formulario editar usuario
+     */
     public function edit(User $user)
     {
-        $roles = Role::all();
-        return view('admin.users.edit', compact('user', 'roles'));
+        $roles = Role::orderBy('id')->get();
+
+        // Solo para mostrar en pantalla
+        $memberships = Membership::where('is_active', true)
+            ->orderBy('duration_days')
+            ->get();
+
+        return view('admin.users.edit', compact('user', 'roles', 'memberships'));
     }
 
+    /**
+     * Actualizar usuario
+     * ❌ NO se guardan membership_id ni discount_percent
+     */
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
-            'name'      => 'required',
-            'email'     => 'required|email|unique:users,email,' . $user->id,
-            'role_id'   => 'required|exists:roles,id',
-            'is_active' => 'required|boolean',
+            'name'      => ['required', 'string', 'max:255'],
+            'email'     => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'password'  => ['nullable', 'string', 'min:6'],
+            'role_id'   => ['required', 'exists:roles,id'],
+            'is_active' => ['required', 'boolean'],
         ]);
 
-        if ($request->filled('password')) {
-            $request->validate(['password' => 'min:6']);
-            $data['password'] = Hash::make($request->password);
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
 
         $user->update($data);
 
-        return redirect()->route('admin.users.index')->with('success', 'User updated');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Usuario actualizado correctamente.');
     }
 
+    /**
+     * Eliminar usuario
+     */
     public function destroy(User $user)
     {
-        $user->update(['is_active' => false]);
-        return redirect()->route('admin.users.index')->with('success', 'User deactivated');
+        $user->delete();
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Usuario eliminado correctamente.');
     }
 }

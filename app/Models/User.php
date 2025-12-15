@@ -2,41 +2,32 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-// 👉 OJO: ya NO usamos HasApiTokens aquí
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable; // 👉 quitamos HasApiTokens
-
-    // Campos que se pueden llenar en masa
     protected $fillable = [
         'name',
         'email',
         'password',
         'role_id',
         'is_active',
+        'membership_id', // ✅ IMPORTANTE
     ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
+    protected $casts = [
+        'is_active' => 'boolean',
+        'membership_id' => 'integer',
     ];
 
-    // Casts de atributos
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
-    // Relación con Role
-    public function role()
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function membership(): BelongsTo
+    {
+        return $this->belongsTo(Membership::class);
     }
 }

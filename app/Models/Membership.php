@@ -10,7 +10,7 @@ class Membership extends Model
     use HasFactory;
 
     /**
-     * Campos que se pueden asignar en masa (create, update).
+     * Campos que se pueden asignar en masa.
      */
     protected $fillable = [
         'name',
@@ -27,4 +27,12 @@ class Membership extends Model
         'price'         => 'decimal:2',
         'duration_days' => 'integer',
     ];
+
+    /**
+     * 👉 Relación: una membresía tiene muchos usuarios (clientes)
+     */
+    public function users()
+    {
+        return $this->hasMany(\App\Models\User::class);
+    }
 }

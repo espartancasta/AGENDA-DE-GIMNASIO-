@@ -14,7 +14,6 @@
                 box-shadow:0 10px 30px rgba(15,23,42,0.08);
                 overflow:hidden;
             ">
-                {{-- Header de tarjeta --}}
                 <div style="
                     padding: 16px 24px;
                     border-bottom:1px solid #e5e7eb;
@@ -33,7 +32,7 @@
 
                     <a href="{{ route('admin.users.index') }}"
                        style="
-                           padding: 10px 14px;
+                           padding:10px 14px;
                            border-radius:999px;
                            border:1px solid #d1d5db;
                            background:#fff;
@@ -48,7 +47,6 @@
                     </a>
                 </div>
 
-                {{-- Errores --}}
                 @if ($errors->any())
                     <div style="padding:16px 24px 0 24px;">
                         <div style="
@@ -69,17 +67,15 @@
                     </div>
                 @endif
 
-                {{-- Form --}}
                 <form method="POST"
                       action="{{ route('admin.users.update', $user) }}"
                       style="padding: 18px 24px 24px 24px;">
                     @csrf
                     @method('PUT')
 
-                    {{-- Grid --}}
                     <div style="display:grid;grid-template-columns: 1fr 1fr; gap:16px;">
                         {{-- Name --}}
-                        <div style="grid-column: span 1;">
+                        <div>
                             <label for="name" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
                                 Nombre
                             </label>
@@ -89,22 +85,12 @@
                                 type="text"
                                 value="{{ old('name', $user->name) }}"
                                 required
-                                style="
-                                    width:100%;
-                                    border-radius:10px;
-                                    border:1px solid #d1d5db;
-                                    padding:11px 12px;
-                                    font-size:14px;
-                                    color:#111827;
-                                    background:#fff;
-                                    outline:none;
-                                "
-                                placeholder="Nombre completo"
+                                style="width:100%;border-radius:10px;border:1px solid #d1d5db;padding:11px 12px;font-size:14px;color:#111827;background:#fff;"
                             >
                         </div>
 
                         {{-- Email --}}
-                        <div style="grid-column: span 1;">
+                        <div>
                             <label for="email" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
                                 Email
                             </label>
@@ -114,17 +100,7 @@
                                 type="email"
                                 value="{{ old('email', $user->email) }}"
                                 required
-                                style="
-                                    width:100%;
-                                    border-radius:10px;
-                                    border:1px solid #d1d5db;
-                                    padding:11px 12px;
-                                    font-size:14px;
-                                    color:#111827;
-                                    background:#fff;
-                                    outline:none;
-                                "
-                                placeholder="correo@dominio.com"
+                                style="width:100%;border-radius:10px;border:1px solid #d1d5db;padding:11px 12px;font-size:14px;color:#111827;background:#fff;"
                             >
                         </div>
 
@@ -138,17 +114,8 @@
                                 name="password"
                                 type="password"
                                 autocomplete="new-password"
-                                style="
-                                    width:100%;
-                                    border-radius:10px;
-                                    border:1px solid #d1d5db;
-                                    padding:11px 12px;
-                                    font-size:14px;
-                                    color:#111827;
-                                    background:#fff;
-                                    outline:none;
-                                "
                                 placeholder="Deja vacío para no cambiarla"
+                                style="width:100%;border-radius:10px;border:1px solid #d1d5db;padding:11px 12px;font-size:14px;color:#111827;background:#fff;"
                             >
                             <div style="margin-top:6px;font-size:12px;color:#6b7280;">
                                 Si no deseas cambiar la contraseña, deja este campo vacío.
@@ -156,7 +123,7 @@
                         </div>
 
                         {{-- Role --}}
-                        <div style="grid-column: span 1;">
+                        <div>
                             <label for="role_id" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
                                 Rol
                             </label>
@@ -164,27 +131,18 @@
                                 id="role_id"
                                 name="role_id"
                                 required
-                                style="
-                                    width:100%;
-                                    border-radius:10px;
-                                    border:1px solid #d1d5db;
-                                    padding:11px 12px;
-                                    font-size:14px;
-                                    color:#111827;
-                                    background:#fff;
-                                    outline:none;
-                                ">
+                                style="width:100%;border-radius:10px;border:1px solid #d1d5db;padding:11px 12px;font-size:14px;color:#111827;background:#fff;">
                                 @foreach ($roles as $role)
                                     <option value="{{ $role->id }}"
                                         {{ (int) old('role_id', optional($user->role)->id) === (int) $role->id ? 'selected' : '' }}>
-                                        {{ $role->name }}
+                                        {{ ucfirst($role->name) }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
 
                         {{-- Active --}}
-                        <div style="grid-column: span 1;">
+                        <div>
                             <label for="is_active" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
                                 Activo
                             </label>
@@ -192,28 +150,43 @@
                                 id="is_active"
                                 name="is_active"
                                 required
-                                style="
-                                    width:100%;
-                                    border-radius:10px;
-                                    border:1px solid #d1d5db;
-                                    padding:11px 12px;
-                                    font-size:14px;
-                                    color:#111827;
-                                    background:#fff;
-                                    outline:none;
-                                ">
+                                style="width:100%;border-radius:10px;border:1px solid #d1d5db;padding:11px 12px;font-size:14px;color:#111827;background:#fff;">
                                 <option value="1" {{ old('is_active', (int)$user->is_active) == 1 ? 'selected' : '' }}>Sí</option>
                                 <option value="0" {{ old('is_active', (int)$user->is_active) == 0 ? 'selected' : '' }}>No</option>
                             </select>
+                        </div>
+
+                        {{-- ✅ Membresía (solo para cliente) --}}
+                        <div id="membership_wrap" style="grid-column: span 2; display:none;">
+                            <label for="membership_id" style="display:block;font-size:13px;font-weight:800;color:#374151;margin-bottom:6px;">
+                                Membresía del cliente
+                            </label>
+                            <select
+                                id="membership_id"
+                                name="membership_id"
+                                style="width:100%;border-radius:10px;border:1px solid #d1d5db;padding:11px 12px;font-size:14px;color:#111827;background:#fff;">
+                                <option value="">Sin membresía</option>
+                                @foreach ($memberships as $m)
+                                    <option value="{{ $m->id }}"
+                                        {{ (string) old('membership_id', $user->membership_id) === (string) $m->id ? 'selected' : '' }}>
+                                        {{ $m->name }} — ${{ number_format($m->price, 2) }} — {{ $m->duration_days }} días
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div style="margin-top:6px;font-size:12px;color:#6b7280;">
+                                Solo aplica cuando el rol sea Cliente.
+                            </div>
                         </div>
                     </div>
 
                     <hr style="margin:18px 0;border-color:#e5e7eb;">
 
-                    {{-- Botones --}}
                     <div style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
                         <div style="font-size:12px;color:#6b7280;">
-                            Última actualización: <strong style="color:#111827;">{{ optional($user->updated_at)->format('Y-m-d H:i') }}</strong>
+                            Última actualización:
+                            <strong style="color:#111827;">
+                                {{ optional($user->updated_at)->format('Y-m-d H:i') }}
+                            </strong>
                         </div>
 
                         <div style="display:flex; gap:10px; align-items:center;">
@@ -251,15 +224,37 @@
                             </button>
                         </div>
                     </div>
+
+                    {{-- ✅ Script: mostrar/ocultar membresía según rol --}}
+                    <script>
+                        (function () {
+                            const roleSelect = document.getElementById('role_id');
+                            const membershipWrap = document.getElementById('membership_wrap');
+
+                            // Nombres que consideramos "cliente" en tu BD
+                            const clientRoleNames = new Set(['client', 'cliente']);
+
+                            function toggleMembership() {
+                                const selected = roleSelect.options[roleSelect.selectedIndex];
+                                const roleName = (selected.textContent || '').trim().toLowerCase();
+
+                                // También cubrimos por si en text sale "Client" con mayúsculas
+                                if (clientRoleNames.has(roleName)) {
+                                    membershipWrap.style.display = 'block';
+                                } else {
+                                    membershipWrap.style.display = 'none';
+                                    // opcional: limpiar selección si deja de ser cliente
+                                    const membershipSelect = document.getElementById('membership_id');
+                                    if (membershipSelect) membershipSelect.value = '';
+                                }
+                            }
+
+                            toggleMembership();
+                            roleSelect.addEventListener('change', toggleMembership);
+                        })();
+                    </script>
                 </form>
             </div>
-
-            {{-- Responsive simple --}}
-            <style>
-                @media (max-width: 820px) {
-                    .grid-two { grid-template-columns: 1fr !important; }
-                }
-            </style>
         </div>
     </div>
 </x-app-layout>

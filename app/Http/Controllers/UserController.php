@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     /**
-     * Alias de roles (español / inglés)
+     * Alias de roles
      */
     private const ROLE_CLIENT_ALIASES = ['client', 'cliente'];
     private const ROLE_STAFF_ALIASES  = ['staff', 'recepcionista'];
 
     /**
-     * Listado de usuarios
+     * ============================
+     * LISTAR USUARIOS
+     * ============================
      */
     public function index()
     {
@@ -29,14 +31,14 @@ class UserController extends Controller
     }
 
     /**
-     * Formulario crear usuario
-     * (membresías y promociones SOLO VISUALES)
+     * ============================
+     * FORMULARIO: CREAR USUARIO
+     * ============================
      */
     public function create()
     {
         $roles = Role::orderBy('id')->get();
 
-        // Se envían SOLO para la vista (no se guardan)
         $memberships = Membership::where('is_active', true)
             ->orderBy('duration_days')
             ->get();
@@ -45,8 +47,9 @@ class UserController extends Controller
     }
 
     /**
-     * Guardar usuario
-     * ❌ NO se guardan membership_id ni discount_percent
+     * ============================
+     * GUARDAR USUARIO NUEVO
+     * ============================
      */
     public function store(Request $request)
     {
@@ -60,10 +63,7 @@ class UserController extends Controller
 
         $data['password'] = Hash::make($data['password']);
 
-        // 👇 IGNORAR COMPLETAMENTE estos campos (solo UI)
-        // membership_id
-        // discount_percent
-
+        // OJO: NO guardamos membership_id ni discount_percent (no existen en users)
         User::create($data);
 
         return redirect()
@@ -72,13 +72,14 @@ class UserController extends Controller
     }
 
     /**
-     * Formulario editar usuario
+     * ============================
+     * FORMULARIO: EDITAR USUARIO
+     * ============================
      */
     public function edit(User $user)
     {
         $roles = Role::orderBy('id')->get();
 
-        // Solo para mostrar en pantalla
         $memberships = Membership::where('is_active', true)
             ->orderBy('duration_days')
             ->get();
@@ -87,8 +88,9 @@ class UserController extends Controller
     }
 
     /**
-     * Actualizar usuario
-     * ❌ NO se guardan membership_id ni discount_percent
+     * ============================
+     * ACTUALIZAR USUARIO
+     * ============================
      */
     public function update(Request $request, User $user)
     {
@@ -114,10 +116,21 @@ class UserController extends Controller
     }
 
     /**
-     * Eliminar usuario
+     * ============================
+     * ELIMINAR USUARIO
+     * ============================
      */
     public function destroy(User $user)
     {
+        // Bloquear eliminar ADMIN (por rol o por correo)
+        $isAdmin = ($user->role?->name === 'admin') || ($user->email === 'admin@gym.local');
+
+        if ($isAdmin) {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('error', 'Acceso bloqueado: no puedes eliminar un administrador.');
+        }
+
         $user->delete();
 
         return redirect()

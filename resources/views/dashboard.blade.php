@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-3xl font-bold text-emerald-400 tracking-tight">
-            {{ __('Dashboard') }}
+            {{ __('Panel') }}
         </h2>
     </x-slot>
 
@@ -12,9 +12,9 @@
             <div class="bg-slate-900/70 border border-emerald-500/20 shadow-lg sm:rounded-xl">
                 <div class="p-6 text-slate-100">
                     <p class="mb-2 text-lg">
-                        Hola, <span class="font-semibold text-emerald-400">{{ auth()->user()->name }}</span> 👋
+                        Hola, <span class="font-semibold text-emerald-400">{{ auth()->user()->name }}</span>
                     </p>
-                    <p class="text-sm text-slate-300">{{ __("You're logged in!") }}</p>
+                    <p class="text-sm text-slate-300">¡Has iniciado sesión!</p>
                 </div>
             </div>
 
